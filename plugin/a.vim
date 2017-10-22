@@ -144,6 +144,13 @@ if (!exists('g:alternateRelativeFiles'))
    let g:alternateRelativeFiles = 1
 endif
 
+function! <SID>GetAlternateSearchPath()
+    if (exists('b:alternateSearchPath'))
+        return b:alternateSearchPath
+    else
+        return g:alternateSearchPath
+    endif
+endfunction
 
 " Function : GetNthItemFromList (PRIVATE)
 " Purpose  : Support reading items from a comma seperated list
@@ -387,7 +394,7 @@ function! AlternateFile(splitWindow, ...)
      let allfiles = ""
      if (extension != "")
         let allfiles1 = EnumerateFilesByExtension(currentPath, baseName, extension)
-        let allfiles2 = EnumerateFilesByExtensionInPath(baseName, extension, g:alternateSearchPath, currentPath)
+        let allfiles2 = EnumerateFilesByExtensionInPath(baseName, extension, <SID>GetAlternateSearchPath(), currentPath)
 
         if (allfiles1 != "")
            if (allfiles2 != "")
@@ -434,7 +441,7 @@ function! AlternateOpenFileUnderCursor(splitWindow,...)
    let currentPath = expand("%:p:h")
    let openCount = 1
 
-   let fileName = <SID>FindFileInSearchPathEx(cursorFile, g:alternateSearchPath, currentPath, openCount)
+   let fileName = <SID>FindFileInSearchPathEx(cursorFile, <SID>GetAlternateSearchPath(), currentPath, openCount)
    if (fileName != "")
       call <SID>FindOrCreateBuffer(fileName, a:splitWindow, 1)
       let b:openCount = openCount
@@ -469,14 +476,14 @@ function! AlternateOpenNextFile(bang)
    endif
 
    if (cursorFile != ""  && currentPath != ""  && openCount != 0)
-      let fileName = <SID>FindFileInSearchPathEx(cursorFile, g:alternateSearchPath, currentPath, openCount)
+      let fileName = <SID>FindFileInSearchPathEx(cursorFile, <SID>GetAlternateSearchPath(), currentPath, openCount)
       if (fileName != "")
          call <SID>FindOrCreateBuffer(fileName, "n".a:bang, 0)
          let b:openCount = openCount
          let b:cursorFile = cursorFile
          let b:currentPath = currentPath
       else
-         let fileName = <SID>FindFileInSearchPathEx(cursorFile, g:alternateSearchPath, currentPath, 1)
+         let fileName = <SID>FindFileInSearchPathEx(cursorFile, <SID>GetAlternateSearchPath(), currentPath, 1)
          if (fileName != "")
             call <SID>FindOrCreateBuffer(fileName, "n".a:bang, 0)
             let b:openCount = 1
