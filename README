@@ -9,6 +9,7 @@ Changes:
 - When determining extension, search for longest match so that an extension that
   includes another valid extension as a substring (e.g., ".abc.d" and ".d") is
   detected correctly
+- Add support for overriding g:alternateSearchPath with b:alternateSearchPath
 
 Changes are licensed under the same terms as the original
 
